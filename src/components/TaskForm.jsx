@@ -10,7 +10,7 @@ export default function TaskForm({ setTasks }) {
     
     if (!task || !status) return;
 
-    const response = await fetch('http://localhost:5000/tasks', {
+    const response = await fetch('https://farhan.mahbub.dev/api/tasks', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

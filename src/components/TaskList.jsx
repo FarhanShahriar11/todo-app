@@ -1,65 +1,53 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 export default function TaskList({ tasks, setTasks }) {
-
-  // Fetch tasks when the component mounts
+  
+  
   useEffect(() => {
-    // console.log("requesting tasks from backend");
-
+    console.log("requesting from initial ")
     const fetchTasks = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/tasks');
-        if (!response.ok) {
-          throw new Error('Failed to fetch tasks');
-        }
-        const data = await response.json();
-        setTasks(data.tasks || []);
-      } catch (error) {
-        console.error('Error fetching tasks:', error);
-      }
-    };
-
-    fetchTasks();
-  }, [setTasks]); // Empty array ensures this runs only once after the initial mount
-
-  const handleComplete = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:5000/tasks/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: 'completed' }),
-      });
-
+      const response = await fetch('https://farhan.mahbub.dev/api/tasks');
       const data = await response.json();
+      setTasks(data.tasks || []); 
+      console.log(tasks,'Tasks are ');
+    };
+    
+    fetchTasks();
+  }, [setTasks]); 
 
-      if (data.message === 'Task updated') {
-        setTasks((prevTasks) =>
-          prevTasks.map((task) =>
-            task.id === id ? { ...task, status: 'completed' } : task
-          )
-        );
-      }
-    } catch (error) {
-      console.error('Error completing task:', error);
+  
+  const handleComplete = async (id) => {
+    const response = await fetch(`https://farhan.mahbub.dev/api/tasks/${id}`, {
+      method: 'PUT',  
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status: 'completed' }), 
+    });
+    const data = await response.json();
+
+    if (data.message === 'Task updated') {
+      
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === id ? { ...task, status: 'completed' } : task
+        )
+      );
     }
   };
 
+  
   const handleDelete = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:5000/tasks/${id}`, {
-        method: 'DELETE',
-      });
+    const response = await fetch(`https://farhan.mahbub.dev/api/tasks/${id}`, {
+      method: 'DELETE',
+    });
 
-      const data = await response.json();
-      if (data.message === 'Task deleted') {
-        setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
-      }
-    } catch (error) {
-      console.error('Error deleting task:', error);
+    const data = await response.json();
+    if (data.message === 'Task deleted') {
+      
+      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
     }
   };
 
@@ -80,13 +68,13 @@ export default function TaskList({ tasks, setTasks }) {
               <div className="space-x-2">
                 <button
                   className="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition-colors"
-                  onClick={() => handleComplete(task.id)}
+                  onClick={() => handleComplete(task.id)} 
                 >
                   Complete
                 </button>
                 <button
                   className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors"
-                  onClick={() => handleDelete(task.id)}
+                  onClick={() => handleDelete(task.id)} 
                 >
                   Delete
                 </button>
